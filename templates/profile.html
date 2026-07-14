@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow-lg border-0 rounded-4">
+
+                <div class="card-body p-5">
+
+                    <div class="text-center">
+
+                        <img src="https://ui-avatars.com/api/?name={{ request.user.first_name }}+{{ request.user.last_name }}&background=0d6efd&color=fff&size=150"
+                             class="rounded-circle mb-4"
+                             width="150"
+                             height="150">
+
+                        <h2 class="fw-bold">
+
+                            {{ request.user.first_name }}
+                            {{ request.user.last_name }}
+
+                        </h2>
+
+                        <p class="text-muted">
+
+                            @{{ request.user.username }}
+
+                        </p>
+
+                    </div>
+
+                    <hr>
+
+                    <div class="row mt-4">
+
+                        <div class="col-md-6 mb-3">
+
+                            <h6 class="text-muted">
+
+                                Email
+
+                            </h6>
+
+                            <h5>
+
+                                {{ request.user.email }}
+
+                            </h5>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <h6 class="text-muted">
+
+                                Username
+
+                            </h6>
+
+                            <h5>
+
+                                {{ request.user.username }}
+
+                            </h5>
+
+                        </div>
+
+                    </div>
+
+                    <hr>
+
+                    <div class="row text-center">
+
+                        <div class="col-md-4">
+
+                            <h2 class="text-primary">
+
+                                {{ total }}
+
+                            </h2>
+
+                            <p>
+
+                                Total Resumes
+
+                            </p>
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                            <h2 class="text-success">
+
+                                {{ average }}%
+
+                            </h2>
+
+                            <p>
+
+                                Average ATS
+
+                            </p>
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                            <h2 class="text-warning">
+
+                                {{ request.user.date_joined|date:"d M Y" }}
+
+                            </h2>
+
+                            <p>
+
+                                Joined
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <hr>
+
+                    <div class="text-center mt-4">
+
+                        <a href="{% url 'dashboard' %}"
+                           class="btn btn-primary me-2">
+
+                            Dashboard
+
+                        </a>
+
+                        <a href="{% url 'history' %}"
+                           class="btn btn-success me-2">
+
+                            History
+
+                        </a>
+
+                        <a href="{% url 'logout' %}"
+                           class="btn btn-danger">
+
+                            Logout
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

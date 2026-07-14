@@ -1,0 +1,489 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <!-- Heading -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h1 class="fw-bold text-primary">
+                Admin Dashboard
+            </h1>
+
+            <p class="text-muted">
+                AI Resume Analyzer - System Overview
+            </p>
+
+        </div>
+
+        <a href="{% url 'dashboard' %}" class="btn btn-primary">
+            User Dashboard
+        </a>
+
+    </div>
+
+    <div class="mb-4">
+
+        <a href="{% url 'export_csv' %}" class="btn btn-success">
+
+            Export All Data (CSV)
+
+        </a>
+
+    </div>
+
+    <!-- Statistics Cards -->
+
+    <div class="row g-4 mb-5">
+
+        <div class="col-lg-4 col-md-6">
+
+            <div class="card shadow border-0 rounded-4 h-100">
+
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        Total Users
+                    </h6>
+
+                    <h2 class="fw-bold text-primary">
+                        {{ total_users }}
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+
+            <div class="card shadow border-0 rounded-4 h-100">
+
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        Total Resume Analyses
+                    </h6>
+
+                    <h2 class="fw-bold text-success">
+                        {{ total_resumes }}
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+
+            <div class="card shadow border-0 rounded-4 h-100">
+
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        Average ATS Score
+                    </h6>
+
+                    <h2 class="fw-bold text-warning">
+                        {{ average }}%
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+
+            <div class="card shadow border-0 rounded-4 h-100">
+
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        Highest ATS Score
+                    </h6>
+
+                    <h2 class="fw-bold text-info">
+                        {{ highest }}%
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+
+            <div class="card shadow border-0 rounded-4 h-100">
+
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        Today's Uploads
+                    </h6>
+
+                    <h2 class="fw-bold text-danger">
+                        {{ today_uploads }}
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+
+            <div class="card shadow border-0 rounded-4 h-100">
+
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        Total Analyses
+                    </h6>
+
+                    <h2 class="fw-bold">
+                        {{ total_resumes }}
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Recent Resume Analysis -->
+
+    <div class="card shadow border-0 rounded-4">
+
+        <div class="card-header bg-dark text-white">
+
+            <h3 class="mb-0">
+                Recent Resume Analyses
+            </h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <form method="GET" class="row mb-4">
+
+                    <div class="col-md-10">
+
+                        <input type="text" name="search" class="form-control"
+                            placeholder="Search by Candidate, Email or Username" value="{{ search }}">
+
+                    </div>
+
+                    <div class="col-md-2">
+
+                        <button class="btn btn-primary w-100">
+
+                            Search
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>Candidate</th>
+
+                            <th>Email</th>
+
+                            <th>User</th>
+
+                            <th>ATS Score</th>
+
+                            <th>Uploaded</th>
+
+                            <th>Actions</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for resume in recent %}
+
+                        <tr>
+
+                            <td>
+
+                                {{ forloop.counter }}
+
+                            </td>
+
+                            <td>
+
+                                {{ resume.candidate_name }}
+
+                            </td>
+
+                            <td>
+
+                                {{ resume.email }}
+
+                            </td>
+
+                            <td>
+
+                                {{ resume.user.username }}
+
+                            </td>
+
+                            <td>
+
+                                {% if resume.ats_score >= 80 %}
+
+                                <span class="badge bg-success">
+
+                                    {{ resume.ats_score }}%
+
+                                </span>
+
+                                {% elif resume.ats_score >= 60 %}
+
+                                <span class="badge bg-warning text-dark">
+
+                                    {{ resume.ats_score }}%
+
+                                </span>
+
+                                {% else %}
+
+                                <span class="badge bg-danger">
+
+                                    {{ resume.ats_score }}%
+
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                {{ resume.uploaded_at|date:"d M Y H:i" }}
+
+                            </td>
+
+                            <td>
+
+                                <a href="{% url 'resume_detail' resume.id %}" class="btn btn-sm btn-primary">
+
+                                    View
+
+                                </a>
+
+                                <a href="{% url 'download_pdf' resume.id %}" class="btn btn-sm btn-danger">
+
+                                    PDF
+
+                                </a>
+
+                                <a href="{% url 'delete_resume' resume.id %}" class="btn btn-sm btn-outline-danger"
+                                    onclick="return confirm('Delete this resume?');">
+
+                                    Delete
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td colspan="7" class="text-center">
+
+                                No Resume Analyses Available
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+    <!-- Charts Section -->
+
+    <div class="row mt-5">
+
+        <!-- Bar Chart -->
+
+        <div class="col-lg-6 mb-4">
+
+            <div class="card shadow border-0 rounded-4">
+
+                <div class="card-header bg-primary text-white">
+
+                    <h5 class="mb-0">
+                        ATS Score Distribution
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <canvas id="barChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Pie Chart -->
+
+        <div class="col-lg-6 mb-4">
+
+            <div class="card shadow border-0 rounded-4">
+
+                <div class="card-header bg-success text-white">
+
+                    <h5 class="mb-0">
+                        Resume Categories
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <canvas id="pieChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Chart.js -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const excellent = Number("{{ excellent }}");
+const good = Number("{{ good }}");
+const poor = Number("{{ poor }}");
+
+// Bar Chart
+
+new Chart(document.getElementById("barChart"), {
+
+    type: "bar",
+
+    data: {
+
+        labels: ["Excellent", "Good", "Poor"],
+
+        datasets: [{
+
+            label: "Number of Resumes",
+
+            data: [excellent, good, poor],
+
+            borderWidth: 1
+
+        }]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        plugins: {
+
+            legend: {
+
+                display: false
+
+            }
+
+        },
+
+        scales: {
+
+            y: {
+
+                beginAtZero: true
+
+            }
+
+        }
+
+    }
+
+});
+
+// Pie Chart
+
+new Chart(document.getElementById("pieChart"), {
+
+    type: "pie",
+
+    data: {
+
+        labels: ["Excellent", "Good", "Poor"],
+
+        datasets: [{
+
+            data: [excellent, good, poor]
+
+        }]
+
+    },
+
+    options: {
+
+        responsive: true
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

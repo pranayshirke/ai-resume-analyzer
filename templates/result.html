@@ -1,0 +1,422 @@
+{% extends "base.html" %}
+
+{% block title %}Resume Analysis{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="text-center mb-5">
+        <h1 class="fw-bold">Resume Analysis Report</h1>
+        <p class="text-muted">AI Powered ATS Resume Analysis</p>
+    </div>
+
+    <!-- ATS Score -->
+
+    <div class="card shadow border-0 rounded-4 mb-5">
+
+        <div class="card-body text-center">
+
+            <h3 class="mb-4">ATS Score</h3>
+
+            <h1 class="display-1 fw-bold text-primary">
+
+                {{ ats.overall }}%
+
+            </h1>
+
+            {% if ats.overall >= 80 %}
+
+            <span class="badge bg-success fs-5">
+
+                Excellent Match
+
+            </span>
+
+            {% elif ats.overall >= 60 %}
+
+            <span class="badge bg-warning text-dark fs-5">
+
+                Good Match
+
+            </span>
+
+            {% else %}
+
+            <span class="badge bg-danger fs-5">
+
+                Needs Improvement
+
+            </span>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <!-- Candidate Details -->
+
+        <div class="col-lg-5 mb-4">
+
+            <div class="card shadow h-100">
+
+                <div class="card-header bg-primary text-white">
+
+                    <h4>Candidate Details</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    <p><strong>Name :</strong> {{ resume_data.name }}</p>
+
+                    <p><strong>Email :</strong> {{ resume_data.email }}</p>
+
+                    <p><strong>Phone :</strong> {{ resume_data.phone }}</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Skills -->
+
+        <div class="col-lg-7 mb-4">
+
+            <div class="card shadow h-100">
+
+                <div class="card-header bg-success text-white">
+
+                    <h4>Skills</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    {% for skill in resume_data.skills %}
+
+                    <span class="badge bg-primary m-1">
+
+                        {{ skill }}
+
+                    </span>
+
+                    {% empty %}
+
+                    <p>No skills detected.</p>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Matched Skills -->
+
+    <div class="card shadow mb-4">
+
+        <div class="card-header bg-success text-white">
+
+            <h4>Matched Skills</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            {% for skill in ats.matched %}
+
+            <span class="badge bg-success m-1">
+
+                {{ skill }}
+
+            </span>
+
+            {% empty %}
+
+            <p>No matched skills.</p>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <!-- Missing Skills -->
+
+    <div class="card shadow mb-4">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>Missing Skills</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            {% for skill in ats.missing %}
+
+            <span class="badge bg-danger m-1">
+
+                {{ skill }}
+
+            </span>
+
+            {% empty %}
+
+            <p>No missing skills.</p>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <!-- AI Suggestions -->
+
+    <div class="card shadow mb-4">
+
+        <div class="card-header bg-warning">
+
+            <h4>AI Suggestions</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <ul>
+
+                {% for suggestion in suggestions %}
+
+                <li>{{ suggestion }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+    </div>
+
+    <!-- Cover Letter -->
+
+    <div class="card shadow mb-5">
+
+        <div class="card-header bg-info text-white">
+
+            <h4>AI Cover Letter</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <textarea id="coverLetter" class="form-control" rows="15" readonly>{{ cover_letter }}</textarea>
+
+            <br>
+
+            <button class="btn btn-primary" onclick="copyCoverLetter()">
+
+                Copy Cover Letter
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- Job Description Match -->
+
+    <div class="card shadow border-0 rounded-4 mb-5">
+
+        <div class="card-header bg-dark text-white">
+
+            <h4>
+
+                <i class="bi bi-clipboard-check"></i>
+
+                Job Description Match
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <h3 class="text-center mb-4">
+
+                Match Score
+
+                <span class="badge bg-primary">
+
+                    {{ job_match.percentage }}%
+
+                </span>
+
+            </h3>
+
+            <div class="progress mb-4" style="height:30px;">
+
+                <div class="progress-bar bg-success" role="progressbar" style="width: {{ job_match.percentage }}%;">
+
+                    {{ job_match.percentage }}%
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <!-- Matched -->
+
+                <div class="col-lg-6">
+
+                    <h5 class="text-success">
+
+                        ✅ Matched Keywords
+
+                    </h5>
+
+                    <hr>
+
+                    {% for word in job_match.matched %}
+
+                    <span class="badge bg-success m-1 p-2">
+
+                        {{ word }}
+
+                    </span>
+
+                    {% empty %}
+
+                    <p>No matched keywords.</p>
+
+                    {% endfor %}
+
+                </div>
+
+                <!-- Missing -->
+
+                <div class="col-lg-6">
+
+                    <h5 class="text-danger">
+
+                        ❌ Missing Keywords
+
+                    </h5>
+
+                    <hr>
+
+                    {% for word in job_match.missing %}
+
+                    <span class="badge bg-danger m-1 p-2">
+
+                        {{ word }}
+
+                    </span>
+
+                    {% empty %}
+
+                    <p>No missing keywords.</p>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Recommended Jobs -->
+
+    <div class="card shadow border-0 rounded-4 mb-5">
+
+        <div class="card-header bg-primary text-white">
+
+            <h4>
+
+                <i class="bi bi-briefcase-fill"></i>
+
+                Recommended Jobs
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            {% for job in recommended_jobs %}
+
+            <div class="alert alert-primary d-flex align-items-center">
+
+                <i class="bi bi-check-circle-fill me-3 fs-4"></i>
+
+                <strong>{{ job }}</strong>
+
+            </div>
+
+            {% empty %}
+
+            <div class="alert alert-warning">
+
+                No job recommendations available.
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <!-- Buttons -->
+
+    <div class="text-center">
+
+        <a href="{% url 'dashboard' %}" class="btn btn-primary">
+
+            Analyze Another Resume
+
+        </a>
+
+        <a href="{% url 'history' %}" class="btn btn-success">
+
+            History
+
+        </a>
+
+        <a href="{% url 'download_pdf' resume_id %}" class="btn btn-danger">
+
+            Download PDF
+
+        </a>
+
+    </div>
+
+</div>
+
+<script>
+
+    function copyCoverLetter() {
+
+        const textarea = document.getElementById("coverLetter");
+
+        navigator.clipboard.writeText(textarea.value);
+
+        alert("Cover Letter Copied Successfully!");
+
+    }
+
+</script>
+
+{% endblock %}

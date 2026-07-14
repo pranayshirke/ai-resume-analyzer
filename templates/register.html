@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+
+<section class="min-vh-100 d-flex align-items-center" style="background:linear-gradient(135deg,#2563eb,#0f172a);">
+
+    <div class="container">
+
+        <div class="row justify-content-center">
+
+            <div class="col-lg-6 col-md-8">
+
+                <div class="card shadow-lg border-0 rounded-4">
+
+                    <div class="card-body p-5">
+
+                        <div class="text-center mb-4">
+
+                            <i class="bi bi-person-plus-fill display-1 text-primary"></i>
+
+                            <h2 class="fw-bold mt-3">
+                                Create Your Account
+                            </h2>
+
+                            <p class="text-muted">
+                                Join AI Resume Analyzer and start improving your resume.
+                            </p>
+
+                        </div>
+
+                        <form method="POST">
+
+                            {% csrf_token %}
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Full Name</label>
+                                {{ form.first_name }}
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Username</label>
+                                {{ form.username }}
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Email</label>
+                                {{ form.email }}
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Password</label>
+                                {{ form.password }}
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <i class="bi bi-person-check-fill"></i>
+                                Register
+                            </button>
+
+                        </form>
+
+                        <hr class="my-4">
+
+                        <div class="text-center">
+
+                            <p class="mb-0">
+                                Already have an account?
+
+                                <a href="{% url 'login' %}" class="fw-bold text-decoration-none">
+                                    Login Here
+                                </a>
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

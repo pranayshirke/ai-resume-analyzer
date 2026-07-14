@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <h2 class="text-center fw-bold mb-5">
+        Dashboard
+    </h2>
+
+    <!-- Statistics -->
+
+    <div class="row g-4 mb-5">
+
+        <div class="col-md-4">
+
+            <div class="card shadow border-0 text-center">
+
+                <div class="card-body">
+
+                    <h5>Total Resumes</h5>
+
+                    <h1 class="text-primary">
+
+                        {{ total_resumes }}
+
+                    </h1>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card shadow border-0 text-center">
+
+                <div class="card-body">
+
+                    <h5>Average ATS</h5>
+
+                    <h1 class="text-success">
+
+                        {{ average_ats }}%
+
+                    </h1>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card shadow border-0 text-center">
+
+                <div class="card-body">
+
+                    <h5>Today's Uploads</h5>
+
+                    <h1 class="text-warning">
+
+                        {{ today_uploads }}
+
+                    </h1>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ATS Chart -->
+
+    <div class="card shadow border-0 mb-5">
+
+        <div class="card-body">
+
+            <h3 class="mb-4">
+                ATS Score Analytics
+            </h3>
+
+            <canvas id="atsChart"></canvas>
+
+        </div>
+
+    </div>
+
+    <!-- Upload Resume -->
+
+    <div class="card shadow border-0">
+
+        <div class="card-body">
+
+            <h3 class="mb-4">
+
+                Analyze New Resume
+
+            </h3>
+
+            <form method="POST" enctype="multipart/form-data">
+
+                {% csrf_token %}
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Upload Resume
+
+                    </label>
+
+                    {{ form.resume }}
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Job Description
+
+                    </label>
+
+                    {{ form.job_description }}
+
+                </div>
+
+                <button class="btn btn-primary btn-lg">
+
+                    Analyze Resume
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const ctx = document.getElementById('atsChart');
+
+new Chart(ctx, {
+
+    type: 'bar',
+
+    data: {
+
+        labels: {{ chart_labels|safe }},
+
+        datasets: [{
+
+            label: 'ATS Score',
+
+            data: {{ chart_scores|safe }},
+
+            borderWidth: 2
+
+        }]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        scales: {
+
+            y: {
+
+                beginAtZero: true,
+
+                max:100
+
+            }
+
+        }
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

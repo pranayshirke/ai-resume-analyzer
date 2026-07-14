@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block title %}History{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h2 class="fw-bold">
+            Resume Analysis History
+        </h2>
+
+        <a href="{% url 'dashboard' %}" class="btn btn-primary">
+            + Analyze New Resume
+        </a>
+
+    </div>
+
+    <!-- Search -->
+
+    <form method="GET" class="mb-4">
+
+        <div class="input-group">
+
+            <input type="text" name="search" class="form-control" placeholder="Search by Candidate Name or Email..."
+                value="{{ search }}">
+
+            <button class="btn btn-primary">
+
+                Search
+
+            </button>
+
+        </div>
+
+    </form>
+
+    {% if resumes %}
+
+    <div class="table-responsive">
+
+        <table class="table table-hover table-bordered align-middle shadow">
+
+            <thead class="table-dark">
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>Candidate</th>
+
+                    <th>Email</th>
+
+                    <th>Phone</th>
+
+                    <th>ATS Score</th>
+
+                    <th>Date</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for resume in resumes %}
+
+                <tr>
+
+                    <td>{{ forloop.counter }}</td>
+
+                    <td>{{ resume.candidate_name }}</td>
+
+                    <td>{{ resume.email }}</td>
+
+                    <td>{{ resume.phone }}</td>
+
+                    <td>
+
+                        {% if resume.ats_score >= 80 %}
+
+                        <span class="badge bg-success">
+
+                            {{ resume.ats_score }}%
+
+                        </span>
+
+                        {% elif resume.ats_score >= 60 %}
+
+                        <span class="badge bg-warning text-dark">
+
+                            {{ resume.ats_score }}%
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-danger">
+
+                            {{ resume.ats_score }}%
+
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        {{ resume.uploaded_at|date:"d M Y" }}
+
+                    </td>
+
+                    <td>
+
+                        <a href="{% url 'resume_detail' resume.id %}" class="btn btn-sm btn-primary">
+
+                            View
+
+                        </a>
+
+
+                        <a href="{% url 'download_pdf' resume.id %}" class="btn btn-danger btn-sm">
+
+                            PDF
+
+                        </a>
+
+                        
+                        <a href="{% url 'delete_resume' resume.id %}" class="btn btn-sm btn-outline-danger"
+                            onclick="return confirm('Delete this resume?');">
+
+                            Delete
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+    <div class="alert alert-info text-center">
+
+        <h4>No Resume History Found</h4>
+
+        <p>Analyze your first resume to see it here.</p>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

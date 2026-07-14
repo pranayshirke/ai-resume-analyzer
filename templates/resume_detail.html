@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}Resume Details{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h1 class="fw-bold text-primary">
+            Resume Details
+        </h1>
+
+        <a href="{% url 'admin_dashboard' %}"
+           class="btn btn-secondary">
+
+            ← Back to Admin Dashboard
+
+        </a>
+
+    </div>
+
+    <div class="row">
+
+        <!-- Candidate Details -->
+
+        <div class="col-lg-6 mb-4">
+
+            <div class="card shadow h-100">
+
+                <div class="card-header bg-primary text-white">
+
+                    <h4>Candidate Information</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    <p><strong>Name:</strong> {{ resume.candidate_name }}</p>
+
+                    <p><strong>Email:</strong> {{ resume.email }}</p>
+
+                    <p><strong>Phone:</strong> {{ resume.phone }}</p>
+
+                    <p><strong>Username:</strong> {{ resume.user.username }}</p>
+
+                    <p><strong>Uploaded:</strong> {{ resume.uploaded_at }}</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ATS Score -->
+
+        <div class="col-lg-6 mb-4">
+
+            <div class="card shadow h-100">
+
+                <div class="card-header bg-success text-white">
+
+                    <h4>ATS Score</h4>
+
+                </div>
+
+                <div class="card-body text-center">
+
+                    <h1 class="display-3 text-success">
+
+                        {{ resume.ats_score }}%
+
+                    </h1>
+
+                    {% if resume.ats_score >= 80 %}
+
+                        <span class="badge bg-success fs-5">
+
+                            Excellent Resume
+
+                        </span>
+
+                    {% elif resume.ats_score >= 60 %}
+
+                        <span class="badge bg-warning text-dark fs-5">
+
+                            Good Resume
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge bg-danger fs-5">
+
+                            Needs Improvement
+
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Skills -->
+
+    <div class="card shadow mb-4">
+
+        <div class="card-header bg-info text-white">
+
+            <h4>Skills</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            {% for skill in resume.skills.split %}
+
+                <span class="badge bg-primary m-1 p-2">
+
+                    {{ skill }}
+
+                </span>
+
+            {% empty %}
+
+                <p>No skills found.</p>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <!-- Actions -->
+
+    <div class="text-center">
+
+        <a href="{% url 'download_pdf' resume.id %}"
+           class="btn btn-danger btn-lg me-3">
+
+            Download PDF
+
+        </a>
+
+        <a href="{% url 'admin_dashboard' %}"
+           class="btn btn-primary btn-lg">
+
+            Back
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}
